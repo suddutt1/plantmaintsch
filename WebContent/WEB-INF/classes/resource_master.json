@@ -1,0 +1,52 @@
+[
+  {
+    "type": "WORKSHOP",
+    "id": "WORKSHOP BAY 1",
+    "description": "WORKSHOP BAY 1"
+  },
+  {
+    "type": "WORKSHOP",
+    "id": "WORKSHOP BAY 2",
+    "description": "WORKSHOP BAY 2"
+  },
+  {
+    "type": "WORKSHOP",
+    "id": "WORKSHOP BAY 3",
+    "description": "WORKSHOP BAY 3"
+  },
+  {
+    "type": "WORKSHOP",
+    "id": "WORKSHOP BAY 4",
+    "description": "WORKSHOP BAY 4"
+  },
+  {
+    "type": "SPARE_EXCA",
+    "id": "SPARES  FOR EXCA",
+    "description": "SPARES  FOR EXCA"
+  },
+  {
+    "type": "SPARE_DUMP",
+    "id": "SPARES  FOR DUMP",
+    "description": "SPARES  FOR DUMP"
+  },
+  {
+    "type": "SPARE_HAULER",
+    "id": "SPARES  FOR HAUL",
+    "description": "SPARES  FOR HAUL"
+  },
+  {
+    "type": "SPARE_SHO",
+    "id": "SPARES  FOR SHO",
+    "description": "SPARES  FOR SHO"
+  },
+  {
+    "type": "MANPOWER",
+    "id": "MANPOWER RESOURCES",
+    "description": "MANPOWER RESOURCES"
+  },
+  {
+    "type": "SUBCONTRATOR",
+    "id": "SUBCONTRACTOR",
+    "description": "SUBCONTRACTOR"
+  }
+]
