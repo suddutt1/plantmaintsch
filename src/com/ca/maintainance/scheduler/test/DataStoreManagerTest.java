@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.ca.maintainance.scheduler.data.DataStore;
 import com.ca.maintainance.scheduler.data.DataStoreManager;
+import com.ca.maintainance.scheduler.data.MonthlySchedule;
 import com.ca.maintainance.scheduler.data.ResourceSchedule;
 
 public class DataStoreManagerTest {
@@ -36,7 +37,10 @@ public class DataStoreManagerTest {
 		assertEquals(false, sch.isAvailable());
 		Date lastMaintDate = store2.getLastMaintenanceDate("1000308");
 		assertNotNull(lastMaintDate);
-		
+		MonthlySchedule monthlySchedule = store2.getMonthlySchedule("SPARES  FOR EXCA", 1, 2017);
+		assertNotNull(monthlySchedule);
+		assertNotNull(monthlySchedule.getResource());
+		assertNotNull(monthlySchedule.getAvailablity());
 	}
 
 }

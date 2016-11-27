@@ -46,6 +46,16 @@ public class HomeAction implements WebActionHandler {
 		}
 		return mvObject;
 	}
+	@RequestMapping("plantschedulehome.wss")
+	public ModelAndView loadPlantScheduleHome(HttpServletRequest request,HttpServletResponse response)
+	{
+		
+		ModelAndView mvObject = new ModelAndView(ViewType.JSP_VIEW);
+		mvObject.setView("app/scheduleHome.jsp");
+		mvObject.addModel("resources", DataStoreManager.getDataStore().getResourceList());
+		return mvObject;
+	}
+	
 	private String getSafeString(String elem)
 	{
 		return (elem!=null? elem.trim():"");

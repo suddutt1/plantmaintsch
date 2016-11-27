@@ -22,28 +22,56 @@
 		<div class="container">
 			<form class="form-horizontal">
 					<!-- Form Name -->
-					<legend>Equipment Maintenance Scheduler</legend>
+					<legend>Plant Resource Availability</legend>
 					<!-- Select Basic -->
 					<div class="form-group">
-						<label class="col-sm-2 control-label" for="equipment">Select
-							Equipment</label>
+						<label class="col-sm-2 control-label" for="resource">Select
+							Resource</label>
 						<div class="col-sm-10">
-							<select id="equipment" name="equipment" class="form-control" >
-								<c:forEach items="${equipmentList}" var="equipment">
-								<option value="${equipment.equipmentNumber}">
-								<c:out value="${equipment.description}"/>-<c:out value="${equipment.equipmentNumber}" />
+							<select id="resource" name="resource" class="form-control" >
+								<c:forEach items="${resources}" var="resource">
+								<option value="${resource.id}">
+								<c:out value="${resource.description}"/> 
 								</option>
 								</c:forEach>	
 							</select>
 						</div>
 					</div>
-					
-					<!-- Button -->
-					
+					<div class="form-group">
+						<label class="col-sm-2 pt-1 control-label" for="year">Select
+							Year</label>
+						<div class="col-sm-4 pt-1">
+							<select id="year" name="year" class="form-control" >
+								<option value="2017">
+								2017 
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 pt-1 control-label" for="month">Select
+							Month</label>
+						<div class="col-sm-4 pt-1">
+							<select id="month" name="month" class="form-control" >
+								<option value="1">January</option>
+								<option value="2">February</option>
+								<option value="3">March</option>
+								<option value="4">April</option>
+								<option value="5">May</option>
+								<option value="6">June</option>
+								<option value="7">July</option>
+								<option value="8">August</option>
+								<option value="9">September</option>
+								<option value="10">October</option>
+								<option value="11">November</option>
+								<option value="12">December</option>
+							</select>
+						</div>
+					</div>
 					<div class="form-group">
 						<div class="offset-sm-2 col-sm-10 pt-1">
 							<input type="button"  name="planBtn" id="planBtn"
-								class="btn btn-primary" value="Get Cognitive Plan"/>
+								class="btn btn-primary" value="Get Resource Availability"/>
 						</div>
 					</div>
 			</form>

@@ -23,4 +23,6 @@ public interface DataStore {
 	ResourceSchedule modifySchedule(ResourceSchedule rsch);
 	ResourceSchedule getSchedule(String date,String shift,String resourceId);
 	ResourceSchedule getAvailableResourceOn(String resoureType,String date,String shift);
+	MonthlySchedule getMonthlySchedule(String resourceId,int month,int year);
+	
 }
