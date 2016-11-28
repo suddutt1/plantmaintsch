@@ -12,9 +12,10 @@
 					<li class="nav-item active"><a class="nav-link" href="home.wss">Home
 							<span class="sr-only">(current)</span>
 					</a></li>
-					<li class="nav-item"><a class="nav-link" href="plantschedulehome.wss">Maintenance
-							Schedule</a></li>
+					<li class="nav-item"><a class="nav-link" href="plantschedulehome.wss">Plant Resources</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Equipment</a>
+					</li>
+					<li class="nav-item"><a class="nav-link" href="weatherhome.wss">Weather</a>
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">Configuration</a>
 					</li>

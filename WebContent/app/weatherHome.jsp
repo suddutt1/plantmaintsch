@@ -22,25 +22,23 @@
 		<div class="container">
 			<form class="form-horizontal">
 					<!-- Form Name -->
-					<legend>Plant Resource Availability</legend>
+					<legend>Weather Data</legend>
 					<!-- Select Basic -->
 					<div class="form-group">
-						<label class="col-sm-2 control-label" for="resourceId">Select
-							Resource</label>
-						<div class="col-sm-10">
-							<select id="resourceId" name="resourceId" class="form-control" >
-								<c:forEach items="${resources}" var="resource">
-								<option value="${resource.id}">
-								<c:out value="${resource.description}"/> 
-								</option>
-								</c:forEach>	
+						<label class="col-sm-2 control-label" for="location">Select
+							Location</label>
+						<div class="col-sm-4">
+							<select id="location" name="location" class="form-control" >
+								<option value="MINE1">Mine 1</option>
+								<option value="MINE2">Mine 2</option>
+								<option value="MINE3">Mine 3</option>
 							</select>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 pt-1 control-label" for="year">Select
+						<label class="col-sm-2 control-label" for="year">Select
 							Year</label>
-						<div class="col-sm-4 pt-1">
+						<div class="col-sm-4 ">
 							<select id="year" name="year" class="form-control" >
 								<option value="2017">
 								2017 
@@ -69,9 +67,21 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-sm-2 pt-1 control-label" for="shift">Select
+							Shift</label>
+						<div class="col-sm-4 pt-1">
+							<select id="shift" name="shift" class="form-control" >
+								<option value="SHIFT 1">SHIFT 1</option>
+								<option value="SHIFT 2">SHIFT 2</option>
+								<option value="SHIFT 3">SHIFT 3</option>
+								
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
 						<div class="offset-sm-2 col-sm-10 pt-1">
 							<input type="button"  name="planBtn" id="planBtn"
-								class="btn btn-primary" value="Get Resource Availability"/>
+								class="btn btn-primary" value="Get Weather Data"/>
 						</div>
 					</div>
 			</form>
@@ -88,18 +98,26 @@
 	<script src="js/tether.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script id="dataTableTemplate" type="x-tmpl-mustache">
-		<table class="table table-striped col-sm-12">
-		<thead class="thead-inverse">
-			<tr>
-				<th>Date</th><th>Shift 1</th><th>Shift 2</th><th>Shift 3</th>
-			</tr>
-		</thead>
-		<tbody>
-			{{#rows}}
-				<tr><td>{{planDate}}</td><td>{{{shift1}}}</td><td>{{{shift2}}}</td><td>{{{shift3}}}</td></tr>
-			{{/rows}}
-		</tbody>
-		</table>	
+		<table class="table table-stripe">
+			<thead>
+				<tr>
+					<th>Date</th>
+				{{#timeSlots}}
+					<th>{{.}}</th>
+				{{/timeSlots}}
+				</tr>
+			</thead>
+			<tbody>
+				{{#dataRows}}
+				<tr>
+				<td>{{date}}</td>
+					{{#forecast}}
+						<td>{{{rain}}}<br/>{{{visibility}}}</td>
+					{{/forecast}}
+				</tr>
+				{{/dataRows}}
+			</tbody>
+		</table>
 	</script>
 	
 	
@@ -116,13 +134,13 @@
 	{
 		$("#planResult").hide();
 		var postData = {};
-		postData["resourceId"]=$("#resourceId").val();
+		postData["location"]=$("#location").val();
 		postData["month"]=$("#month").val();
 		postData["year"]=$("#year").val();
-		
+		postData["shift"]=$("#shift").val();
 		$.ajax({
          type: 'POST',
-         url:  'getMonthlySchedule.wss',
+         url:  'getMonthlyWeather.wss',
          data: postData
       })
          .done( function (responseText) {
@@ -147,34 +165,62 @@
 	{
 		var resp = eval("("+responseTxt+")");
 		//console.log("Response object "+ resp);
-		var data = resp.result.availablity;
+		var data = resp.result.forecast;
 		var tableTemplate = $("#dataTableTemplate").html();
 		Mustache.parse(tableTemplate);
 		var rows = new Array();
 		for(var date in data)
 		{
-			//console.log(date+"|"+ data[date]);
-			var availble = data[date];
-			rows.push({	planDate: date,
-				shift1:genString(availble[0]),
-				shift2:genString(availble[1]),
-				shift3:genString(availble[2])
+			//Get the hourly forecast
+			var rowData = data[date];
+			//console.log(rowData)
+			rows.push({	'date': date,
+				'forecast': genLegands(rowData)
 			}); 
 		}
-		var tableContent = Mustache.render(tableTemplate,{'rows':rows});
+		var tableContent = Mustache.render(tableTemplate,{'timeSlots':resp.result.timeSlots,'dataRows': rows});
 		$("#detailResult").html(tableContent);
-		console.log(tableContent);
+		//console.log(tableContent);
 	}
-	function genString(value)
+	function genLegands(value)
 	{
-		if(value==true)
+		var output = new Array();
+		for(var index=0;index<value.length;index++)
 		{
-			return '<span class="tag tag-pill tag-success">Avilable</span>';
+			output.push({rain:getRainLegand(value[index].precpProb),visibility:getVisibilityLegand(value[index].visibility)});
+		}
+		return output;
+		
+	}
+	function getRainLegand(value)
+	{
+		if(value!=-1)
+		{
+			if(value>90)
+			{
+				return '<img src="css/sunny.png"/>';
+			}
+			else
+			{
+				return '<img src="css/rain.png"/>';
+			}
 		}
 		else
 		{
-			return '<span class="tag tag-pill tag-danger">Not avilable</span>';
+			return '<span class="tag tag-pill tag-danger">NA</span>';
+		} 
+	}
+	function getVisibilityLegand(value)
+	{
+		if(value!=-1)
+		{
+			var show = value/1000.0;
+			return '<span class="tag tag-pill tag-info">'+show+'Km</span>';
 		}
+		else
+		{
+			return '<span class="tag tag-pill tag-danger">NA</span>';
+		} 
 	}
 	</script>
 	

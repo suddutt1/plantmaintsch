@@ -4,10 +4,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -24,20 +28,59 @@ public class JSONFileWeatherDataService implements WeatherDataService {
 	private static final Logger _LOGGER = Logger
 			.getLogger(JSONFileWeatherDataService.class.getName());
 	private Map<String, List<WeatherForecast>> weatherDataMap = new HashMap<>();
+	private static final SimpleDateFormat _DT_FMT = new SimpleDateFormat(
+			"yyyy.MM.dd");
+	
+	@Override
+	public MonthlyForecast getMonthlyWeather(int month, int year,
+			long startTime, long endTime, double latitude, double longitude) {
+		List<WeatherForecast> nullForecast = new ArrayList<>();
+		List<String> timeString = new ArrayList<>();
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.clear();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month - 1);
+
+		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		Map<String, List<WeatherForecast>> forecastMap = new LinkedHashMap<>();
+		for (long index = startTime; index <= endTime; index++) {
+			timeString.add((index < 10 ? "0" + index + ":00" : index + ":00"));
+		}
+		for (int day = 1; day <= maxDays; day++) {
+			calendar.set(Calendar.DAY_OF_MONTH, day);
+			String date = _DT_FMT.format(calendar.getTime());
+			List<WeatherForecast> dayForecast = getWeatherForecast(date,
+					startTime, endTime, latitude, longitude);
+			if (dayForecast == null) {
+				if (nullForecast.size() == 0) {
+					nullForecast = new ArrayList<>();
+					for (long time = startTime; time <= endTime; time++) {
+						nullForecast.add(new WeatherForecast("", time, -1, -1));
+					}
+					
+				}
+				dayForecast = nullForecast;
+			}
+			forecastMap.put(date, dayForecast);
+		}
+		MonthlyForecast monthlyForecast = new MonthlyForecast(forecastMap,
+				timeString.toArray(new String[timeString.size()]));
+
+		return monthlyForecast;
+	}
 
 	@Override
 	public List<WeatherForecast> getWeatherForecast(String date,
 			long startTime, long endTime, double latitude, double longitude) {
 		// TODO Auto-generated method stub
-		
-		if(this.weatherDataMap.get(date)!=null)
-		{
-			List<WeatherForecast> fullDayForeCast = this.weatherDataMap.get(date);
+
+		if (this.weatherDataMap.get(date) != null) {
+			List<WeatherForecast> fullDayForeCast = this.weatherDataMap
+					.get(date);
 			List<WeatherForecast> shiftForeCast = new ArrayList<>();
-			for(WeatherForecast forecast: fullDayForeCast)
-			{
-				if(forecast.getTime()>=startTime && forecast.getTime()<=endTime )
-				{
+			for (WeatherForecast forecast : fullDayForeCast) {
+				if (forecast.getTime() >= startTime
+						&& forecast.getTime() <= endTime) {
 					shiftForeCast.add(forecast);
 				}
 			}
@@ -45,16 +88,16 @@ public class JSONFileWeatherDataService implements WeatherDataService {
 		}
 		return null;
 	}
-	
 
 	@Override
 	public boolean loadWeatherData() {
 		boolean isLoadSuccess = false;
 		try {
 			Gson gson = new GsonBuilder().create();
-			Type listType = new TypeToken<HashMap<String, List<WeatherForecast>>>(){}.getType();
-			this.weatherDataMap = gson.fromJson(readJson("weather_forecast.json"),
-					listType);
+			Type listType = new TypeToken<HashMap<String, List<WeatherForecast>>>() {
+			}.getType();
+			this.weatherDataMap = gson.fromJson(
+					readJson("weather_forecast.json"), listType);
 			arrageData();
 			isLoadSuccess = true;
 		} catch (Exception ex) {
@@ -64,23 +107,22 @@ public class JSONFileWeatherDataService implements WeatherDataService {
 		}
 		return isLoadSuccess;
 	}
-	
-	private void arrageData()
-	{
+
+	private void arrageData() {
 		Comparator<WeatherForecast> timeComp = new Comparator<WeatherForecast>() {
 
 			@Override
 			public int compare(WeatherForecast o1, WeatherForecast o2) {
 				// TODO Auto-generated method stub
-				return (int)(o1.getTime()-o2.getTime());
+				return (int) (o1.getTime() - o2.getTime());
 			}
-		
+
 		};
-		for(List<WeatherForecast> forecastList: this.weatherDataMap.values())
-		{
-			Collections.sort(forecastList,timeComp);
+		for (List<WeatherForecast> forecastList : this.weatherDataMap.values()) {
+			Collections.sort(forecastList, timeComp);
 		}
 	}
+
 	@Override
 	public boolean flushWeatherData(Map<String, String> context) {
 		// TODO Auto-generated method stub
@@ -138,7 +180,8 @@ public class JSONFileWeatherDataService implements WeatherDataService {
 			fos.flush();
 			isWriteSuccess = true;
 		} catch (Exception ex) {
-			_LOGGER.log(Level.SEVERE, "|WeatherJSONData| Unable to write to :" + path);
+			_LOGGER.log(Level.SEVERE, "|WeatherJSONData| Unable to write to :"
+					+ path);
 			isWriteSuccess = false;
 		} finally {
 			if (fos != null) {
@@ -153,6 +196,7 @@ public class JSONFileWeatherDataService implements WeatherDataService {
 		}
 		return isWriteSuccess;
 	}
+
 	private String readJson(String jsonName) throws Exception {
 		String content = null;
 		InputStream inputScr = JSONFileDataStore.class.getClassLoader()

@@ -7,8 +7,15 @@ public interface WeatherDataService {
 
 	List<WeatherForecast> getWeatherForecast(String date, long startTime,
 			long endTime, double latitude, double longitude);
+
 	boolean loadWeatherData();
-	boolean flushWeatherData(Map<String,String> context);
-	boolean updateWeatherData(String dt,long time,WeatherElement elem,long value);
-	
+
+	boolean flushWeatherData(Map<String, String> context);
+
+	boolean updateWeatherData(String dt, long time, WeatherElement elem,
+			long value);
+
+	MonthlyForecast getMonthlyWeather(int month, int year, long startTime,
+			long endTime, double latitude, double longitude);
+
 }
