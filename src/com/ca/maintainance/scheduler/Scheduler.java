@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import com.ca.maintainance.scheduler.data.DataStore;
 import com.ca.maintainance.scheduler.data.DataStoreManager;
-import com.ca.maintainance.scheduler.data.DataUtil;
 import com.ca.maintainance.scheduler.data.Equipment;
 import com.ca.maintainance.scheduler.data.ResourceSchedule;
 import com.ca.maintainance.scheduler.data.WeatherDataManager;
@@ -63,7 +62,8 @@ public class Scheduler {
 				calendar.add(Calendar.DAY_OF_YEAR,
 						equipment.getMaintanceInverval());
 				String plannedDate = _DT_FMT.format(calendar.getTime());
-				logicalTrace.add("Equipment maintenance planned date "
+				plan.setOemMaintenanceDate(plannedDate);
+				logicalTrace.add("Equipment OEM maintenance planned date "
 						+ plannedDate);
 				//plan.setPlannedDate(plannedDate);
 				List<String> resourceTypes = getResoutceTypeForMaintenance(equipment);
@@ -92,16 +92,17 @@ public class Scheduler {
 		long endTime = 7;
 		if ("SHIFT 2".equalsIgnoreCase(shift)) {
 			startTime = 8;
-			endTime = 16;
+			endTime = 15;
 		} else if ("SHIFT 3".equalsIgnoreCase(shift)) {
-			startTime = 17;
-			endTime = 24;
+			startTime = 16;
+			endTime = 23;
 		}
 
 		shiftForecast = service.getWeatherForecast(date, startTime, endTime, 0,
 				0);
 		if (shiftForecast == null) {
 			plan.getPlanningTace().add("No weather forecast data ...");
+			plan.setForecast(new WeatherForecast("", 0, -1,-1));
 			return true;
 		} else {
 			boolean isWeatherGood = true;
@@ -118,6 +119,7 @@ public class Scheduler {
 			if (isWeatherGood) {
 				plan.getPlanningTace().add(
 						"Forecase suitable during " + date + ": " + shift);
+				plan.setForecast(shiftForecast.get(0));
 			}
 			return isWeatherGood;
 		}

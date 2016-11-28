@@ -278,6 +278,7 @@ public class JSONFileDataStore implements DataStore {
 			fos.write(json.getBytes());
 			fos.flush();
 			isWriteSuccess = true;
+			_LOGGER.info("|JSONStore| Written to file :"+ path);
 		} catch (Exception ex) {
 			_LOGGER.log(Level.SEVERE, "|JSONStore| Unable to write to :" + path);
 			isWriteSuccess = false;

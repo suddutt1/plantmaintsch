@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ca.maintainance.scheduler.data.DataUtil;
 import com.ca.maintainance.scheduler.data.ResourceSchedule;
+import com.ca.maintainance.scheduler.data.WeatherForecast;
 
 public class Schedule {
 	
@@ -13,6 +14,8 @@ public class Schedule {
 	private List<String> planningTace;
 	private String lastMaintenceDate;
 	private List<ResourceSchedule> schedule;
+	private String oemMaintenanceDate;
+	private WeatherForecast forecast;
 	
 	public Schedule()
 	{
@@ -124,6 +127,34 @@ public class Schedule {
 	 */
 	public void setSchedule(List<ResourceSchedule> schedule) {
 		this.schedule = schedule;
+	}
+
+	/**
+	 * @return the oemMaintenanceDate
+	 */
+	public String getOemMaintenanceDate() {
+		return oemMaintenanceDate;
+	}
+
+	/**
+	 * @param oemMaintenanceDate the oemMaintenanceDate to set
+	 */
+	public void setOemMaintenanceDate(String oemMaintenanceDate) {
+		this.oemMaintenanceDate = oemMaintenanceDate;
+	}
+
+	/**
+	 * @return the forecast
+	 */
+	public WeatherForecast getForecast() {
+		return forecast;
+	}
+
+	/**
+	 * @param forecast the forecast to set
+	 */
+	public void setForecast(WeatherForecast forecast) {
+		this.forecast = forecast;
 	}
 	
 

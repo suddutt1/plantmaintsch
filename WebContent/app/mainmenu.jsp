@@ -14,7 +14,7 @@
 					</a></li>
 					<li class="nav-item"><a class="nav-link" href="plantschedulehome.wss">Maintenance
 							Schedule</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Equipments</a>
+					<li class="nav-item"><a class="nav-link" href="#">Equipment</a>
 					</li>
 					<li class="nav-item"><a class="nav-link" href="#">Configuration</a>
 					</li>

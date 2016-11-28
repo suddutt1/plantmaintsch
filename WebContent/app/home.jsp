@@ -55,21 +55,43 @@
 		      <div class="card-text pb-1" id="detailResult" >
 		      		<ul class="list-group">
   					   <li class="list-group-item">
+					    <span class="tag tag-success tag-pill float-xs-right" id="lastMaintenceDate"></span>
+					    Last maintenance date
+					  </li>
+					   <li class="list-group-item">
+					    <span class="tag tag-success tag-pill float-xs-right" id="oemMaintenanceDate"></span>
+					    OEM proposed maintenance date
+					  </li>
+  					   <li class="list-group-item">
 					    <span class="tag tag-pill float-xs-right" id="plannedDate"></span>
-					    Proposed planned date
+					    Proposed cognitive planned date
 					  </li>
 					  <li class="list-group-item">
 					    <span class="tag tag-success tag-pill float-xs-right" id="shift"></span>
 					    Shift
 					  </li>
-					  <li class="list-group-item">
-					    <span class="tag tag-success tag-pill float-xs-right" id="lastMaintenceDate"></span>
-					    Last maintenance date
-					  </li>
-  					</ul>	
+					  
+  					</ul>
+  					<h5>Weather forecast</h5>
+  						<ul class="list-group" id="weather">
+  							<li class="list-group-item">
+							    <span class="tag tag-pill float-xs-right" id="weatherDate"></span>
+							    Date
+							 </li>
+							 <li class="list-group-item">
+							    <span class="tag tag-pill float-xs-right" id="rain"></span>
+							    Rain
+							 </li>
+							 <li class="list-group-item">
+							    <span class="tag tag-pill float-xs-right" id="visibility"></span>
+							    Visibility
+							 </li>
+  						</ul>	
+  					<div id="resourceList">	
   					<h5>Resource details</h5>
   					<ul class="list-group" id="resources">
   					</ul>
+  					</div>
   					<h5>Planning details</h5>
   					<ul class="list-group" id="trace">
   					</ul>
@@ -146,6 +168,9 @@
 			$("#plannedDate").text(plannedDate);
 			$("#plannedDate").removeClass('tag-warning');
 			$("#plannedDate").addClass('tag-success');
+			$("#weatherDate").text(plannedDate);
+			$("#weatherDate").removeClass('tag-warning');
+			$("#weatherDate").addClass('tag-success');
 			
 		}
 		else
@@ -153,19 +178,58 @@
 			$("#plannedDate").text('Not found');
 			$("#plannedDate").removeClass('tag-success');
 			$("#plannedDate").addClass('tag-warning');
+			$("#weatherDate").text('Not applicable');
+			$("#weatherDate").removeClass('tag-success');
+			$("#weatherDate").addClass('tag-warning');
+			
 		}
-		
+		//If weather is available then update 
+		if(resp.result.forecast!=null)
+		{
+			var forecast = resp.result.forecast;
+			if(forecast.precpProb!=-1)
+			{
+				$("#rain").removeClass('tag-warning');
+				$("#rain").html('<img src="css/sunny.png"/>');
+				$("#visibility").removeClass('tag-warning');
+				$("#visibility").addClass('tag-success');
+				$("#visibility").text(forecast.visibility+" meters");
+			}
+			else
+			{
+				$("#rain").addClass('tag-warning');
+				$("#rain").text('No weather data');
+				$("#visibility").addClass('tag-warning');
+				$("#visibility").text('No weather data');
+			}
+		}
+		else
+		{
+				$("#rain").addClass('tag-warning');
+				$("#rain").text('Not applicable');
+				$("#visibility").addClass('tag-warning');
+				$("#visibility").text('Not applicable');
+				
+		}
+		$("#oemMaintenanceDate").text(resp.result.oemMaintenanceDate);
 		$("#shift").text(resp.result.shift);
 		$("#lastMaintenceDate").text(resp.result.lastMaintenceDate);
 		var template = $('#traceTemplate').html();
 		Mustache.parse(template);   // optional, speeds up future uses
 		var rendered = Mustache.render(template, {items: resp.result.planningTace});
 		$('#trace').html(rendered);
-		
-		var resourceTemplate = $("#resourceTemplate").html();
-		Mustache.parse(resourceTemplate);
-		var resourceInfo = Mustache.render(resourceTemplate, {resources: resp.result.schedule});
-		$("#resources").html(resourceInfo);
+		if(resp.result.schedule!=null)
+		{
+			$("#resourceList").show();
+			var resourceTemplate = $("#resourceTemplate").html();
+			Mustache.parse(resourceTemplate);
+			var resourceInfo = Mustache.render(resourceTemplate, {resources: resp.result.schedule});
+			$("#resources").html(resourceInfo);
+		}
+		else
+		{
+			$("#resourceList").hide();
+		}
 		
 	}
 	</script>
