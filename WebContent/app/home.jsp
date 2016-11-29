@@ -80,7 +80,7 @@
 							 </li>
 							 <li class="list-group-item">
 							    <span class="tag tag-pill float-xs-right" id="rain"></span>
-							    Rain
+							    Forecast
 							 </li>
 							 <li class="list-group-item">
 							    <span class="tag tag-pill float-xs-right" id="visibility"></span>
